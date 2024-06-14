@@ -1,0 +1,15 @@
+# cat << EOF > nginx-labels.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    env: dev
+    name: nginx
+    tier: frontend
+    version: v1
+  name: nginx-labels
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+EOF

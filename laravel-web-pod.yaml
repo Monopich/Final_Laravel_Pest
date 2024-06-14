@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: laravel-web-pod
+spec:
+  containers:
+  - name: laravel-web-container
+    image: your-laravel-image:tag  # Replace with your Laravel image and tag
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: laravel-data
+      mountPath: /var/www/html  # Assuming Laravel app is in this directory
+  volumes:
+  - name: laravel-data
+    emptyDir: {}
