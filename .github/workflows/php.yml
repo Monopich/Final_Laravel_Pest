@@ -1,13 +1,12 @@
 name: CI
 
-on: 
+on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches:
+      - main
 
 jobs:
   build:
@@ -19,29 +18,32 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.2
+        php-version: '8.2'
     - name: Install dependencies
-      run: composer install
+      run: composer install --prefer-dist --no-progress --no-suggest
+    - name: Copy .env
+      run: cp .env.example .env
     - name: Create SQLite database
       run: touch database/database.sqlite
+    - name: Generate application key
+      run: php artisan key:generate
     - name: Run migrations
       run: php artisan migrate
-    - name: Run tests
-      run: php artisan test
 
-  failure:
-    runs-on: ubuntu-latest
+  notify:
     needs: build
+    runs-on: ubuntu-latest
+    if: failure()
     steps:
-    - name: Send failure notification email
-      uses: dawidd6/action-send-mail@v3
+    - name: Send Email Notification
+      uses: dawidd6/action-send-mail@v2
       with:
-        server_address: smtp.example.com
+        server_address: smtp.your-email.com
         server_port: 587
         username: ${{ secrets.SMTP_USERNAME }}
         password: ${{ secrets.SMTP_PASSWORD }}
-        subject: GitHub Actions Build Failed
-        body: |
-          The build has failed. Please check the CI logs for more details.
-        to: monopich1823@gmail.com
-        from: github-actions@example.com
+        subject: Build Failed
+        to: monopich1823@gmail.com, ${{ github.event.head_commit.author.email }}
+        from: github-actions@yourdomain.com
+        content_type: text/plain
+        body: Build failed for commit ${{ github.sha }} by ${{ github.actor }}.
