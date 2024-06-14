@@ -19,7 +19,7 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: 8.2
     - name: Install dependencies
       run: composer install
     - name: Create SQLite database
@@ -41,6 +41,7 @@ jobs:
         username: ${{ secrets.SMTP_USERNAME }}
         password: ${{ secrets.SMTP_PASSWORD }}
         subject: GitHub Actions Build Failed
-        body: The build has failed.
+        body: |
+          The build has failed. Please check the CI logs for more details.
         to: monopich1823@gmail.com
         from: github-actions@example.com
