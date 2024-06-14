@@ -1,6 +1,13 @@
 name: CI
 
-on: [push, pull_request]
+on: 
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -12,7 +19,7 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.2
+        php-version: '8.2'
     - name: Install dependencies
       run: composer install
     - name: Create SQLite database
@@ -35,5 +42,5 @@ jobs:
         password: ${{ secrets.SMTP_PASSWORD }}
         subject: GitHub Actions Build Failed
         body: The build has failed.
-        to: tongsreng@itc.edu.kh
+        to: monopich1823@gmail.com
         from: github-actions@example.com
